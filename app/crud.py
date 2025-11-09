@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from . import models
+from sqlalchemy import func
+
 
 TTL_MINUTES = 15
 
@@ -46,18 +48,22 @@ def ship_stock(db: Session, product_id: int, warehouse: str, qty: int):
     return inv
 
 def release_expired_reservations(db: Session):
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
+    cutoff_time = now - timedelta(minutes=TTL_MINUTES)
+
     expired = db.query(models.Inventory).filter(
-        models.Inventory.reserved_at != None
+        models.Inventory.reserved_at != None,
+        models.Inventory.reserved_at < cutoff_time
     ).all()
+
     released_count = 0
     for inv in expired:
-        # If reserved_at is older than TTL, release
-        if inv.reserved_at and (now - inv.reserved_at) > timedelta(minutes=TTL_MINUTES):
-            inv.reserved = 0
-            inv.reserved_at = None
-            released_count += 1
-    if released_count:
+        inv.reserved = 0
+        inv.reserved_at = None
+        released_count += 1
+
+    if released_count > 0:
         db.commit()
-        print(f"Released {released_count} expired reservations at {now.isoformat()}")
+        print(f"✅ Released {released_count} expired reservations at {now.isoformat()}")
+
     return released_count

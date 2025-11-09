@@ -5,7 +5,7 @@ from .database import Base
 class Inventory(Base):
     __tablename__ = "inventory"
 
-     inventory_id = Column(Integer, primary_key=True, index=True)
+    inventory_id = Column(Integer, primary_key=True, index=True)
     product_id = Column(Integer, index=True, nullable=False)
     warehouse = Column(String, nullable=False)
     on_hand = Column(Integer, default=0)

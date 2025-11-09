@@ -27,3 +27,8 @@ def release(req: schemas.OperationRequest, db: Session = Depends(get_db)):
 @router.post("/ship", response_model=schemas.InventoryResponse)
 def ship(req: schemas.OperationRequest, db: Session = Depends(get_db)):
     return crud.ship_stock(db, req.product_id, req.warehouse, req.quantity)
+
+@router.post("/reaper")
+def manual_reaper(db: Session = Depends(get_db)):
+    released = crud.release_expired_reservations(db)
+    return {"released_reservations": released}

@@ -9,6 +9,7 @@ class InventoryBase(BaseModel):
 
 class InventoryResponse(InventoryBase):
     inventory_id: int
+    reserved_at: datetime | None
     updated_at: datetime
     class Config:
         orm_mode = True

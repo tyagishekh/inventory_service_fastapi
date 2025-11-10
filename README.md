@@ -28,7 +28,7 @@ APScheduler – background TTL reaper
 
 Docker + Docker Compose – containerized services
 
-Prometheus & Grafana – metrics collection and visualization
+
 
 🗂️ Directory Structure
 inventory_service/
@@ -69,7 +69,6 @@ Docker & Docker Compose installed
 
 Optional: pgAdmin 4 or DBeaver for DB access
 
-Optional: Prometheus + Grafana preinstalled (or use included containers)
 
 🧱 2. Build and Run
 docker-compose up --build
@@ -108,7 +107,7 @@ POST	/v1/inventory/reaper	Manually trigger expired reservation cleanup
 
 🧠 Database Access
 
-Connect via psql, pgAdmin, or DBeaver:
+Connect via CMD, psql, pgAdmin, or DBeaver:
 
 Key	Value
 Host	localhost
@@ -116,6 +115,18 @@ Port	5432
 Database	inventory_db
 Username	user
 Password	password
+
+Example CMD commands:
+
+docker ps
+
+docker exec -it inventory_service_fastapi-inventory-db-1 psql -U user -d inventory_db
+
+\dt
+
+\d inventory
+
+SELECT * FROM inventory
 
 Example psql command:
 
